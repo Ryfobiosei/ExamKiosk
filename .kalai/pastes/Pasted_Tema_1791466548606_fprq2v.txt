@@ -1,0 +1,25 @@
+Done! I wired the top bar to auto-hide and reveal on cursor hover at the top edge.
+
+What changed:
+
+MainWindow.xaml
+
+The top bar (TopBar) now floats above the browser with a TranslateTransform, spanning the full window height at the top (Panel.ZIndex="1").
+The WebView2 spans the entire window behind it (Panel.ZIndex="0"), so when the bar slides away the web content fills the whole screen.
+Added MouseEnter/MouseLeave on the bar and MouseMove on the window.
+MainWindow.xaml.cs
+
+Added a 1-second delay timer so the bar doesn't flicker.
+TopBar_MouseEnter → bar slides down immediately.
+TopBar_MouseLeave → starts the 1 s timer, then slides the bar up (Y = -ActualHeight).
+Window_MouseMove → when the cursor is within 5 px of the top edge, the bar slides back down.
+If the Device controls popup is open, the bar stays visible until you close it.
+Build succeeded with 0 errors. The bar hides automatically when you move the mouse away and reappears as soon as you nudge the cursor to the very top of the screen.
+
+Great improvement but when i move the mouse cursor to where the topbar was nothing show it seems everything was in fullscreen so nothing shows so why don't we have a floating transparent FAB at far top right when click will exit the fullscreen to show the examkiosk topbar and footer i don't know if you get me a hanging FAB
+Kalai
+kimi-k2.6
+Agent
+Sorry, I could not answer your question. Error in agentic mode: Unable to connect to the Kalai service. Please check your internet connection and try again.
+
+Great improvement but when i move the mouse cursor to where the topbar was nothing show it seems everything was in fullscreen so nothing shows so why don't we have a floating transparent FAB at far top right when click will exit the fullscreen to show the examkiosk topbar and footer i don't know if you get me a hanging FAB

@@ -176,7 +176,7 @@
         </Border>
 
         <Grid Grid.Row="0" Grid.RowSpan="3" Background="#0B1716" Panel.ZIndex="0">
-            <wv2:WebView2 x:Name="Browser" />
+            <wv2:WebView2CompositionControl x:Name="Browser" />
         </Grid>
 
         <Border Grid.Row="2" Panel.ZIndex="1" Background="#15302D" BorderBrush="#2A4540" BorderThickness="0,1,0,0">
@@ -198,6 +198,58 @@
                            Foreground="#81968D" />
             </Grid>
         </Border>
+
+        <Button x:Name="RevealChromeButton"
+                Grid.Row="0"
+                Panel.ZIndex="2"
+                Width="44"
+                Height="44"
+                Margin="0,12,14,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                ToolTip="Show ExamKiosk controls"
+                Foreground="#EDF4F0"
+                Background="#AA15302D"
+                BorderBrush="#99A9DCC9"
+                BorderThickness="1"
+                FontSize="24"
+                FontWeight="SemiBold"
+                Cursor="Hand"
+                Visibility="Collapsed"
+                Click="RevealChromeButton_Click">
+            <Button.Content>
+                <Grid Width="18" Height="18">
+                    <Path Data="M 3,6 L 9,12 L 15,6"
+                          Stroke="#EDF4F0"
+                          StrokeThickness="2"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          StrokeLineJoin="Round" />
+                </Grid>
+            </Button.Content>
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="FabChrome"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="22">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="FabChrome" Property="Background" Value="#DD28564A" />
+                            <Setter TargetName="FabChrome" Property="BorderBrush" Value="#DDA9DCC9" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="FabChrome" Property="Background" Value="#EE35594D" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
         <Popup x:Name="ControlsPopup"
                PlacementTarget="{Binding ElementName=ControlsButton}"

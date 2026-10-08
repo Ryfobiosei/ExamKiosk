@@ -677,11 +677,13 @@ public partial class MainWindow : Window
     {
         hideTimer.Stop();
         TopBarTransform.Y = 0;
+        RevealChromeButton.Visibility = Visibility.Collapsed;
     }
 
     private void HideTopBar()
     {
         TopBarTransform.Y = -TopBar.ActualHeight;
+        RevealChromeButton.Visibility = Visibility.Visible;
     }
 
     private void TopBar_MouseEnter(object sender, MouseEventArgs e)
@@ -703,5 +705,10 @@ public partial class MainWindow : Window
         {
             ShowTopBar();
         }
+    }
+
+    private void RevealChromeButton_Click(object sender, RoutedEventArgs e)
+    {
+        ShowTopBar();
     }
 }
