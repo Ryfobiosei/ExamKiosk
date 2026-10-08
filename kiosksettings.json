@@ -6,7 +6,8 @@
     "www.safeexambrowser.org",
     "www.apple.com",
     "127.0.0.1",
-    "172.16.124.228"
+    "172.16.124.228",
+    "http://localhost:5001"
   ],
   "AllowAnySite": true,
   "AllowExit": true,

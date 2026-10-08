@@ -19,16 +19,18 @@ public partial class MainWindow : Window
     private KioskProfile? profile;
     private FileSystemWatcher? settingsWatcher;
     private string? profilePath;
-    private bool allowClose;
-    private bool wifiStatusUpdatePending;
-    private bool reloadPending;
+        private bool allowClose;
+        private bool wifiStatusUpdatePending;
+        private bool reloadPending;
+        private readonly DispatcherTimer hideTimer = new() { Interval = TimeSpan.FromSeconds(1) };
 
     public MainWindow()
     {
-        InitializeComponent();
-        clockTimer.Tick += (_, _) => UpdateTime();
-        wifiStatusTimer.Tick += async (_, _) => await UpdateWifiStatusAsync();
-        UpdateTime();
+            InitializeComponent();
+            clockTimer.Tick += (_, _) => UpdateTime();
+            wifiStatusTimer.Tick += async (_, _) => await UpdateWifiStatusAsync();
+            hideTimer.Tick += (_, _) => HideTopBar();
+            UpdateTime();
         clockTimer.Start();
     }
 
@@ -669,5 +671,37 @@ public partial class MainWindow : Window
     {
         return Uri.TryCreate(address, UriKind.Absolute, out var uri)
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
+    }
+
+    private void ShowTopBar()
+    {
+        hideTimer.Stop();
+        TopBarTransform.Y = 0;
+    }
+
+    private void HideTopBar()
+    {
+        TopBarTransform.Y = -TopBar.ActualHeight;
+    }
+
+    private void TopBar_MouseEnter(object sender, MouseEventArgs e)
+    {
+        ShowTopBar();
+    }
+
+    private void TopBar_MouseLeave(object sender, MouseEventArgs e)
+    {
+        if (!ControlsPopup.IsOpen)
+        {
+            hideTimer.Start();
+        }
+    }
+
+    private void Window_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (e.GetPosition(this).Y < 5)
+        {
+            ShowTopBar();
+        }
     }
 }
