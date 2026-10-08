@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+    <PackageReference Include="NAudio" Version="3.1.0" />
+    <PackageReference Include="System.Management" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="ExamKiosk.Configuration\ExamKiosk.Configuration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="kiosksettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ExamKiosk.Configuration\**\*.cs;ExamKiosk.Configurator\**\*.cs;ExamKiosk.Tests\**\*.cs" />
+    <Page Remove="ExamKiosk.Configurator\**\*.xaml;ExamKiosk.Tests\**\*.xaml" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,466 @@
+<Window x:Class="ExamKiosk.Configurator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ExamKiosk Profile Studio"
+        Width="1120"
+        Height="780"
+        MinWidth="900"
+        MinHeight="660"
+        Background="#F3F6F3"
+        Foreground="#172825"
+        FontFamily="Segoe UI"
+        FontSize="14"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Pine" Color="#163B35" />
+        <SolidColorBrush x:Key="PineLight" Color="#E4EFEA" />
+        <SolidColorBrush x:Key="Mint" Color="#A9DCC9" />
+        <SolidColorBrush x:Key="Ink" Color="#172825" />
+        <SolidColorBrush x:Key="Muted" Color="#63736E" />
+        <SolidColorBrush x:Key="Line" Color="#D7E1DB" />
+
+        <Style x:Key="PrimaryActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="16,10" />
+            <Setter Property="Margin" Value="4,0" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Background" Value="#2E755F" />
+            <Setter Property="BorderBrush" Value="#2E755F" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#39866D" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#39866D" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#225D4D" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#225D4D" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryActionButton" TargetType="Button" BasedOn="{StaticResource PrimaryActionButton}">
+            <Setter Property="Foreground" Value="#24443B" />
+            <Setter Property="Background" Value="#EDF3EF" />
+            <Setter Property="BorderBrush" Value="#D0DDD5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#E1ECE6" />
+                                <Setter TargetName="ButtonChrome" Property="BorderBrush" Value="#B8CEC2" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonChrome" Property="Background" Value="#D2E3DA" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonChrome" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#263C36" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Foreground" Value="#172825" />
+        </Style>
+        <Style x:Key="PanelCard" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#D7E1DB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="14" />
+            <Setter Property="Padding" Value="26" />
+        </Style>
+        <Style x:Key="ProfileTextBox" TargetType="TextBox">
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#172825" />
+            <Setter Property="BorderBrush" Value="#C8D5CE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CaretBrush" Value="#2E755F" />
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#2E755F" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PasswordField" TargetType="PasswordBox">
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="#172825" />
+            <Setter Property="BorderBrush" Value="#C8D5CE" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#2E755F" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="OptionCheckBox" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#243832" />
+            <Setter Property="Margin" Value="0,0,0,15" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="CheckChrome"
+                                    Width="18"
+                                    Height="18"
+                                    Background="White"
+                                    BorderBrush="#A9BDB2"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    VerticalAlignment="Top">
+                                <Path x:Name="CheckMark"
+                                      Data="M 3,9 L 7,13 L 15,4"
+                                      Stroke="White"
+                                      StrokeThickness="2"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"
+                                      Visibility="Collapsed" />
+                            </Border>
+                            <ContentPresenter Grid.Column="1"
+                                              Margin="10,0,0,0"
+                                              VerticalAlignment="Top"
+                                              RecognizesAccessKey="True" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckChrome" Property="Background" Value="#2E755F" />
+                                <Setter TargetName="CheckChrome" Property="BorderBrush" Value="#2E755F" />
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckChrome" Property="BorderBrush" Value="#2E755F" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="CheckChrome" Property="Opacity" Value="0.5" />
+                                <Setter Property="Foreground" Value="#83918B" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ProfileTab" TargetType="TabItem">
+            <Setter Property="MinWidth" Value="190" />
+            <Setter Property="Padding" Value="16,13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#43544E" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabChrome"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"
+                                              ContentSource="Header"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabChrome" Property="Background" Value="#EAF1ED" />
+                                <Setter TargetName="TabChrome" Property="BorderBrush" Value="#DAE6DF" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabChrome" Property="Background" Value="#E1EFE8" />
+                                <Setter TargetName="TabChrome" Property="BorderBrush" Value="#C9E0D4" />
+                                <Setter Property="Foreground" Value="#1E5E4A" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="88" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="46" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#163B35">
+            <DockPanel Margin="28,0">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="New" Style="{StaticResource SecondaryActionButton}" Click="NewButton_Click" />
+                    <Button Content="Open profile" Style="{StaticResource SecondaryActionButton}" Click="OpenButton_Click" />
+                    <Button Content="Save" Style="{StaticResource PrimaryActionButton}" Click="SaveButton_Click" />
+                    <Button Content="Save as…" Style="{StaticResource SecondaryActionButton}" Click="SaveAsButton_Click" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="42" Height="42" CornerRadius="12" Background="#2B5A4E" BorderBrush="#477466" BorderThickness="1" VerticalAlignment="Center">
+                        <TextBlock Text="EK" Foreground="#C9E8DA" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Margin="14,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="EXAMKIOSK  /  ADMINISTRATION" Foreground="#B9D8CB" FontSize="10" FontWeight="SemiBold" />
+                        <TextBlock Text="Profile Studio" Foreground="White" FontSize="22" FontWeight="SemiBold" Margin="0,2,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <TabControl Grid.Row="1"
+                    Margin="28,22,28,18"
+                    TabStripPlacement="Left"
+                    BorderThickness="0"
+                    Background="Transparent">
+            <TabControl.Resources>
+                <Style TargetType="TabItem" BasedOn="{StaticResource ProfileTab}" />
+            </TabControl.Resources>
+            <TabControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel IsItemsHost="True" Margin="0,0,18,0" />
+                </ItemsPanelTemplate>
+            </TabControl.ItemsPanel>
+
+            <TabItem Header="Overview">
+                <Border Style="{StaticResource PanelCard}">
+                    <StackPanel>
+                        <TextBlock Text="Session profile" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="Set the destination and browser rules for an ExamKiosk session."
+                                   Foreground="{StaticResource Muted}"
+                                   Margin="0,0,0,22" />
+                        <Border Background="#163B35" CornerRadius="14" Padding="24" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="EXAMKIOSK  /  PROFILE WORKSPACE" Foreground="#B9D8CB" FontSize="10" FontWeight="SemiBold" />
+                                <TextBlock Text="A focused session, configured your way."
+                                           Foreground="White"
+                                           FontSize="24"
+                                           FontWeight="SemiBold"
+                                           TextWrapping="Wrap"
+                                           Margin="0,10,0,8" />
+                                <TextBlock Text="Manage the exam landing page, permitted sites, exit behavior, and browser controls in one place."
+                                           Foreground="#D3E4DC"
+                                           TextWrapping="Wrap"
+                                           MaxWidth="680" />
+                            </StackPanel>
+                        </Border>
+                        <Grid Margin="0,0,0,20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#F7F9F7" BorderBrush="#E0E8E3" BorderThickness="1" CornerRadius="10" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="PROFILE FILE" Foreground="#71817A" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="JSON configuration" Foreground="#203B33" FontSize="15" FontWeight="SemiBold" Margin="0,6,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#F7F9F7" BorderBrush="#E0E8E3" BorderThickness="1" CornerRadius="10" Padding="16">
+                                <StackPanel>
+                                    <TextBlock Text="CURRENT STATUS" Foreground="#71817A" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock Text="Create or open a profile" Foreground="#203B33" FontSize="15" FontWeight="SemiBold" Margin="0,6,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <Button Content="Validate profile"
+                                HorizontalAlignment="Left"
+                                Style="{StaticResource SecondaryActionButton}"
+                                Click="ValidateButton_Click" />
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Start page">
+                <Border Style="{StaticResource PanelCard}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Start page" Style="{StaticResource SectionTitle}" />
+                            <TextBlock Text="Choose where the browser opens and list the hosts it may reach."
+                                       Foreground="{StaticResource Muted}"
+                                       Margin="0,0,0,22" />
+
+                            <TextBlock Text="Start URL" Style="{StaticResource FieldLabel}" />
+                            <TextBox x:Name="StartUrlBox" Style="{StaticResource ProfileTextBox}" TextChanged="ProfileField_Changed" />
+                            <TextBlock Text="Use an HTTPS URL. Its hostname must be in the allowlist below."
+                                       Margin="0,8,0,22"
+                                       Foreground="{StaticResource Muted}"
+                                       TextWrapping="Wrap" />
+
+                            <DockPanel Margin="0,0,0,8">
+                                <Button Content="Add start host"
+                                        DockPanel.Dock="Right"
+                                        Padding="12,8"
+                                        Margin="8,0,0,0"
+                                        Style="{StaticResource SecondaryActionButton}"
+                                        Click="AddStartHostButton_Click" />
+                                <TextBlock Text="Allowed hostnames" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" />
+                            </DockPanel>
+                            <TextBlock Text="One exact hostname per line. Include login, content, and CDN hosts used by the exam site."
+                                       Margin="0,0,0,10"
+                                       Foreground="{StaticResource Muted}"
+                                       TextWrapping="Wrap" />
+                            <TextBox x:Name="AllowedHostsBox"
+                                     MinHeight="250"
+                                     AcceptsReturn="True"
+                                     TextWrapping="NoWrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Style="{StaticResource ProfileTextBox}"
+                                     FontFamily="Consolas"
+                                     TextChanged="ProfileField_Changed" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Access rules">
+                <Border Style="{StaticResource PanelCard}">
+                    <StackPanel>
+                        <TextBlock Text="Access rules" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="Control which destinations and browser features are available during a session."
+                                   Foreground="{StaticResource Muted}"
+                                   Margin="0,0,0,24" />
+
+                        <CheckBox x:Name="AllowAnySiteBox" Content="Allow any website (ignore allowlist)" Style="{StaticResource OptionCheckBox}" IsChecked="True" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="ShowAddressBarBox" Content="Show the address bar" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="AllowDownloadsBox" Content="Allow downloads" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="AllowClipboardReadBox" Content="Allow websites to read clipboard contents" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+
+                        <Border Background="#F0F5F1" BorderBrush="#DCE7E0" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,10,0,0">
+                            <StackPanel>
+                                <TextBlock Text="About these settings" FontWeight="SemiBold" Foreground="#24483B" />
+                                <TextBlock Text="These rules apply inside the browser. The HTTPS site policy is still enforced when the address bar is shown."
+                                           Margin="0,7,0,0"
+                                           Foreground="{StaticResource Muted}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Exit controls">
+                <Border Style="{StaticResource PanelCard}">
+                    <StackPanel>
+                        <TextBlock Text="Exit controls" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="Choose how a supervised session can be ended."
+                                   Foreground="{StaticResource Muted}"
+                                   Margin="0,0,0,24" />
+
+                        <CheckBox x:Name="AllowExitBox" Content="Allow the user to exit the app" Style="{StaticResource OptionCheckBox}" IsChecked="True" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="RequireExitPasswordBox" Content="Require a password to exit" Style="{StaticResource OptionCheckBox}" IsChecked="True" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+
+                        <TextBlock Text="Exit password" Style="{StaticResource FieldLabel}" Margin="0,8,0,8" />
+                        <PasswordBox x:Name="ExitPasswordBox"
+                                     Margin="0,0,0,22"
+                                     Style="{StaticResource PasswordField}" />
+
+                        <Border Background="#F0F5F1" BorderBrush="#DCE7E0" BorderThickness="1" CornerRadius="10" Padding="16">
+                            <TextBlock Text="Use an exit password when sessions need to remain supervised and recoverable."
+                                       Foreground="{StaticResource Muted}"
+                                       TextWrapping="Wrap" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <TabItem Header="Security">
+                <Border Style="{StaticResource PanelCard}">
+                    <StackPanel>
+                        <TextBlock Text="Security" Style="{StaticResource SectionTitle}" />
+                        <TextBlock Text="Set the browser capabilities available to the session."
+                                   Foreground="{StaticResource Muted}"
+                                   Margin="0,0,0,24" />
+
+                        <CheckBox x:Name="AllowDeveloperToolsBox" Content="Allow developer tools" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="AllowContextMenusBox" Content="Allow context menus" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+                        <CheckBox x:Name="AllowBrowserShortcutsBox" Content="Allow browser shortcuts" Style="{StaticResource OptionCheckBox}" Checked="ProfileField_Changed" Unchecked="ProfileField_Changed" />
+
+                        <Border Background="#F0F5F1" BorderBrush="#DCE7E0" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,12,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Security note" FontWeight="SemiBold" Foreground="#24483B" />
+                                <TextBlock Text="These controls apply at the app level and do not replace managed Windows lockdown policies."
+                                           Margin="0,7,0,0"
+                                           Foreground="{StaticResource Muted}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+        </TabControl>
+
+        <Border Grid.Row="2" Background="#E9EFEB" BorderBrush="#D7E1DB" BorderThickness="0,1,0,0">
+            <Grid Margin="28,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="StatusText" Text="Create or open a profile." VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#2E755F" />
+                <TextBlock x:Name="PathText" Grid.Column="1" Foreground="#65756F" VerticalAlignment="Center" FontSize="11" Margin="20,0,0,0" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

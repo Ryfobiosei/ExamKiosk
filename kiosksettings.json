@@ -1,0 +1,20 @@
+{
+  "Version": 1,
+  "StartUrl": "http://172.16.124.228:5000/workspace",
+  "ExitPassword": "examkiosk",
+  "AllowedHosts": [
+    "www.safeexambrowser.org",
+    "www.apple.com",
+    "127.0.0.1",
+    "172.16.124.228"
+  ],
+  "AllowAnySite": true,
+  "AllowExit": true,
+  "RequireExitPassword": false,
+  "ShowAddressBar": false,
+  "AllowDownloads": false,
+  "AllowDeveloperTools": false,
+  "AllowContextMenus": false,
+  "AllowBrowserShortcuts": false,
+  "AllowClipboardRead": false
+}
