@@ -87,6 +87,22 @@ public sealed class KioskProfile
         AllowedHosts = allowedHosts;
     }
 
+    public void ValidateForSecureSession()
+    {
+        Validate();
+
+        if (!AllowExit || !RequireExitPassword)
+        {
+            throw new InvalidDataException("Secure sessions require an authorized, password-protected exit flow.");
+        }
+
+        if (ExitPassword.Length < 8
+            || string.Equals(ExitPassword, "examkiosk", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidDataException("Choose a non-default exit password with at least 8 characters before using this profile for an exam.");
+        }
+    }
+
     public static string NormalizeHostEntry(string hostValue)
     {
         if (string.IsNullOrWhiteSpace(hostValue))

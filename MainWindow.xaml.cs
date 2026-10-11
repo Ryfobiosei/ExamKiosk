@@ -46,6 +46,7 @@ public partial class MainWindow : Window
             ApplyProfileToBrowser();
             Browser.CoreWebView2.NavigationStarting += Browser_NavigationStarting;
             Browser.CoreWebView2.FrameNavigationStarting += Browser_FrameNavigationStarting;
+            Browser.CoreWebView2.LaunchingExternalUriScheme += Browser_LaunchingExternalUriScheme;
             Browser.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
             Browser.CoreWebView2.WebResourceRequested += Browser_WebResourceRequested;
             Browser.CoreWebView2.NewWindowRequested += Browser_NewWindowRequested;
@@ -195,6 +196,12 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Browser_LaunchingExternalUriScheme(object? sender, CoreWebView2LaunchingExternalUriSchemeEventArgs e)
+    {
+        e.Cancel = true;
+        StatusText.Text = "External application links are blocked during this exam session.";
+    }
+
     private void Browser_WebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
     {
         if (IsHttpUrl(e.Request.Uri) && !IsAllowed(e.Request.Uri))
@@ -277,53 +284,11 @@ public partial class MainWindow : Window
 
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (ShouldBlockShortcut(e.Key, Keyboard.Modifiers))
-        {
-            e.Handled = true;
-            StatusText.Text = "Keyboard shortcut blocked by kiosk mode.";
-            return;
-        }
-
-        if (e.Key == Key.F5)
+        if (e.Key == Key.F5 && profile?.AllowBrowserShortcuts != true)
         {
             e.Handled = true;
             StatusText.Text = "Refresh is disabled in kiosk mode.";
         }
-    }
-
-    private static bool ShouldBlockShortcut(Key key, ModifierKeys modifiers)
-    {
-        var isCtrl = modifiers.HasFlag(ModifierKeys.Control);
-        var isAlt = modifiers.HasFlag(ModifierKeys.Alt);
-        var isShift = modifiers.HasFlag(ModifierKeys.Shift);
-        var isWin = modifiers.HasFlag(ModifierKeys.Windows);
-
-        if (isWin || key == Key.LWin || key == Key.RWin)
-        {
-            return true;
-        }
-
-        if (key == Key.Tab || key == Key.Escape || key == Key.F4 || key == Key.F11 || key == Key.PrintScreen || key == Key.System)
-        {
-            return true;
-        }
-
-        if (isAlt && (key == Key.Tab || key == Key.F4 || key == Key.Space || key == Key.Left || key == Key.Right || key == Key.Up || key == Key.Down || key == Key.Escape))
-        {
-            return true;
-        }
-
-        if (isCtrl && (key == Key.Escape || key == Key.Tab || key == Key.Delete || key == Key.F4 || key == Key.F5 || key == Key.F11 || key == Key.P || key == Key.L || key == Key.W || key == Key.T || key == Key.O || key == Key.N))
-        {
-            return true;
-        }
-
-        if (isShift && key == Key.F10)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -543,10 +508,27 @@ public partial class MainWindow : Window
 
     private void FinalizeSessionExit()
     {
+        if (App.IsExamDesktopChild)
+        {
+            if (!App.RequestAuthorizedExit())
+            {
+                StatusText.Text = "The exit request could not reach the session supervisor. The exam remains active.";
+            }
+
+            return;
+        }
+
         clockTimer.Stop();
         wifiStatusTimer.Stop();
         allowClose = true;
         Close();
+    }
+
+    internal void PrepareAuthorizedApplicationShutdown()
+    {
+        clockTimer.Stop();
+        wifiStatusTimer.Stop();
+        allowClose = true;
     }
 
     private void Navigate(string address)

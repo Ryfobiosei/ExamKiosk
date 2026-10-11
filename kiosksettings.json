@@ -1,18 +1,14 @@
 {
   "Version": 1,
-  "StartUrl": "http://172.16.124.228:5000/workspace",
-  "ExitPassword": "examkiosk",
+  "StartUrl": "https://www.apple.com",
+  "ExitPassword": "ryfobiosei",
   "AllowedHosts": [
     "www.safeexambrowser.org",
-    "www.apple.com",
-    "127.0.0.1",
-    "172.16.124.228",
-    "localhost",
-    "http://localhost:5001"
+    "www.apple.com"
   ],
   "AllowAnySite": true,
   "AllowExit": true,
-  "RequireExitPassword": false,
+  "RequireExitPassword": true,
   "ShowAddressBar": false,
   "AllowDownloads": false,
   "AllowDeveloperTools": false,

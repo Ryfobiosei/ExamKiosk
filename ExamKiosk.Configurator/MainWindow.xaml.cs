@@ -162,7 +162,7 @@ public partial class MainWindow : Window
 
             try
             {
-                profile.Validate();
+                profile.ValidateForSecureSession();
                 SetStatus("Profile loaded and valid.", false);
             }
             catch (InvalidDataException exception)
@@ -182,10 +182,11 @@ public partial class MainWindow : Window
         try
         {
             var profile = BuildProfile();
+            profile.ValidateForSecureSession();
             profile.Save(path);
             profilePath = path;
             PathText.Text = path;
-            SetStatus("Profile validated and saved. Changes are applied live in the kiosk app.", false);
+            SetStatus("Secure profile validated and saved. ExamKiosk reloads settings when this profile is in use.", false);
         }
         catch (Exception exception) when (exception is InvalidDataException or IOException or UnauthorizedAccessException)
         {
@@ -197,8 +198,8 @@ public partial class MainWindow : Window
     {
         try
         {
-            BuildProfile().Validate();
-            SetStatus("Profile is valid and ready to save.", false);
+            BuildProfile().ValidateForSecureSession();
+            SetStatus("Secure profile is valid and ready to save.", false);
         }
         catch (InvalidDataException exception)
         {

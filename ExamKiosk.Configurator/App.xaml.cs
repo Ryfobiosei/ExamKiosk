@@ -35,6 +35,10 @@ public partial class App : Application
             MessageBox.Show($"Dispatcher exception:{Environment.NewLine}{args.Exception}", "ExamKiosk Configurator", MessageBoxButton.OK, MessageBoxImage.Error);
             args.Handled = true;
         };
+
+        var window = new MainWindow();
+        MainWindow = window;
+        window.Show();
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -64,5 +68,6 @@ public partial class App : Application
 
         return true;
     }
+
 }
 

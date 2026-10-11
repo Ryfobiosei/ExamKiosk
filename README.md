@@ -1,64 +1,51 @@
 # ExamKiosk
 
-A Windows 10/11 WPF kiosk-browser prototype built with .NET 10 and WebView2.
+ExamKiosk is a WPF/WebView2 exam browser prototype. When you launch the app, it immediately opens the exam in a supervised, separate Windows desktop. The profile controls the start page, permitted hosts, browser features, and password-authorized exit.
 
 ## Run
 
-Install the .NET 10 SDK and the Microsoft Edge WebView2 Runtime, then run from this directory:
+Install the .NET 10 SDK and Microsoft Edge WebView2 Runtime. Configure a valid `kiosksettings.json`, then run:
 
 ```powershell
-& "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe" run
+dotnet run
 ```
 
-If `dotnet` is on your `PATH`, `dotnet run` also works.
+The app enters its exam desktop at startup. A valid session profile must allow exit, require an exit password, and use a non-default password of at least eight characters. Use the Configurator to edit and validate the profile.
 
 ## Configure a profile
 
-Launch the separate profile editor with:
+Launch the profile editor with:
 
 ```powershell
 dotnet run --project .\ExamKiosk.Configurator\ExamKiosk.Configurator.csproj
 ```
 
-It opens the project-root `kiosksettings.json`, including profiles that need correction. Use **Validate profile** before saving; invalid profiles are not written. Saved settings are applied live while ExamKiosk is running.
+It opens the project-root `kiosksettings.json`, including profiles that need correction. `StartUrl` must be an absolute HTTP or HTTPS URL, and its hostname must appear in `AllowedHosts` when `AllowAnySite` is false. Hosts are exact matches; wildcards are rejected, so include every required login, content, and CDN hostname.
 
-## Validate profiles
-
-Run the profile validation checks with:
-
-```powershell
-dotnet run --project .\ExamKiosk.Tests\ExamKiosk.Tests.csproj
-```
-
-Edit `kiosksettings.json` with the configurator or directly, then save to apply the profile live. `StartUrl` must be an absolute HTTP or HTTPS URL, and its hostname must appear in `AllowedHosts` when `AllowAnySite` is false. Hosts are exact matches; wildcards are rejected, so include every required login, content, and CDN hostname.
-
-Profile options:
+Secure profiles require an enabled password-protected exit and a non-default password of at least eight characters. The current profile stores that password as readable JSON; protect the deployed file with Windows permissions.
 
 | Field | Default | Effect |
 | --- | --- | --- |
-| `ShowAddressBar` | `false` | Show or hide the editable address field; the HTTPS host allowlist still applies. |
+| `ShowAddressBar` | `false` | Show or hide the editable address field; the host allowlist still applies. |
 | `AllowDownloads` | `false` | Permit WebView2 downloads. |
 | `AllowDeveloperTools` | `false` | Permit browser developer tools. |
 | `AllowContextMenus` | `false` | Permit WebView2's default context menus. |
 | `AllowBrowserShortcuts` | `false` | Permit WebView2 browser accelerator shortcuts. |
 | `AllowClipboardRead` | `false` | Allow web content to request clipboard-read permission. |
 
-Clipboard permission is browser-level only; it does not block OS clipboard shortcuts or clipboard writes globally. These options do not prevent Windows shortcuts or escape from the app.
+## Included controls
 
-## Included
+- Maximized, borderless WebView2 exam window.
+- HTTPS navigation and web resources restricted to exact hostnames in the profile.
+- Unapproved popups and external URI launches are blocked.
+- Downloads, developer tools, context menus, and browser shortcuts are disabled by default.
+- App-level keyboard hook suppresses common switching shortcuts while the exam desktop is active.
+- Closing or crashing the browser UI causes the supervisor to reopen it. The normal app exit flow returns to the normal desktop after the configured password check.
 
-- Maximized, borderless browser window with back, forward, reload, and address controls.
-- HTTPS navigation, child frames, and HTTP(S) web resources restricted to exact hostnames in the session profile.
-- New browser windows are redirected into the kiosk window only when the host is allowed; other popups are blocked.
-- Downloads, browser developer tools, default context menus, and browser accelerator shortcuts are disabled.
-- Session exit asks for confirmation, including normal window-close requests.
-- Device panel can adjust supported built-in display brightness and Windows master output volume.
-- Device panel displays current Wi-Fi connection status and local time without exposing network controls.
+## Security and deployment limits
 
-## Limitations
+This is app-level kiosk behavior. The app hook suppresses common shortcuts, including the Windows keys, only while the exam desktop is active. It cannot intercept Windows secure attention (Ctrl+Alt+Delete) or guarantee protection from other OS-level escape routes. The app does not configure Windows Keyboard Filter, replace the Windows shell, or install an elevated service, so it is not equivalent to Safe Exam Browser's Windows lockdown. Microsoft documents Windows-level options such as [Keyboard Filter](https://learn.microsoft.com/en-us/windows/configuration/keyboard-filter/) and [Shell Launcher](https://learn.microsoft.com/en-us/windows/configuration/shell-launcher/); those require managed Windows configuration.
 
-This prototype is an app-level kiosk, not a secure Windows lockdown. It does not block Windows-key shortcuts, Task Manager, user switching, external application launches, or administrative access. Those protections require managed Windows devices and OS-level configuration such as Assigned Access or Shell Launcher; this app does not claim to replace those controls.
+The repository currently does not produce a signed installer or school-wide provisioning package. Treat this as a test build, not a production exam kiosk.
 
-Wi-Fi status is read-only and reports whether a wireless adapter is connected; it does not reveal the network name or allow network changes. Brightness control depends on the display exposing the Windows WMI brightness interface; external monitor support is not guaranteed. Volume changes the system-wide default output volume.
-
-The exam profile is currently a local JSON file and is not signed or encrypted. Do not treat it as tamper-proof. This is an early prototype and is not suitable for high-stakes exams without additional security review, test coverage, deployment hardening, and recovery behavior.
+Wi-Fi status is read-only. Brightness control depends on the display exposing the Windows WMI brightness interface; external monitor support is not guaranteed. Volume changes the system-wide default output volume.
